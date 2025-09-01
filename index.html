@@ -6,7 +6,7 @@
   <meta name="description" content="Portfolio homepage">
   <meta name="keywords" content="frontend development, UI/UX design, digital illustration, portfolio">
   <meta name="author" content="CY">
-  <link rel="icon" href="CY.ico" type="image/x-icon">
+  <link rel="icon" href="img/CY.ico" type="image/x-icon">
 
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;700&family=Roboto+Mono:wght@300;400;500&display=swap" rel="stylesheet">
@@ -19,8 +19,12 @@
 
   <title>Here is CY</title>
 </head>
+
 <body>
-  <!-- Fixed blob container for seamless animation across sections -->
+
+  <div class="liquid-loader" id="loader">
+    <div class="loader-blob"></div>
+  </div>
   <div class="blob-container"></div>
 
   <!-- Navigation -->
@@ -160,179 +164,10 @@
     <p>&copy; 2023 CY Portfolio. All rights reserved.</p>
   </footer>
 
-<script>
-      // Loading screen
-    window.addEventListener('load', () => {
-      const loader = document.getElementById('loader');
-      setTimeout(() => {
-        loader.classList.add('hidden');
-      }, 1500);
-    });
-
-        // Smooth scroll navigation with active link updates
-    document.querySelectorAll('nav a').forEach(link => {
-      link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href');
-        const targetSection = document.querySelector(targetId);
-        
-        if (targetSection) {
-          targetSection.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start'
-          });
-        }
-        
-        // Update active link
-        document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-        link.classList.add('active');
-      });
-    });
-
-        // Form enhancement
-    const form = document.querySelector('.contact-form');
-    const inputs = form.querySelectorAll('input, textarea');
-
-    inputs.forEach(input => {
-      input.addEventListener('focus', () => {
-        input.parentElement.querySelector('label').style.color = '#c084fc';
-      });
-      
-      input.addEventListener('blur', () => {
-        if (!input.value) {
-          input.parentElement.querySelector('label').style.color = '#e0b3ff';
-        }
-      });
-    });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-      const btn = form.querySelector('.submit-btn');
-      const originalText = btn.textContent;
-      
-      btn.textContent = 'Sending...';
-      btn.style.background = 'linear-gradient(135deg, #22c55e, #16a34a)';
-      
-      setTimeout(() => {
-        btn.textContent = 'Message Sent!';
-        setTimeout(() => {
-          btn.textContent = originalText;
-          btn.style.background = 'linear-gradient(135deg, #8b5cf6, #6d28d9, #9333ea)';
-          form.reset();
-        }, 2000);
-      }, 1500);
-    });
-
-  // === Mobile menu (existing code) ===
-const hamburger = document.querySelector('.hamburger');
-const nav = document.querySelector('nav');
-
-hamburger.addEventListener('click', () => {
-  const isExpanded = nav.classList.toggle('active');
-  hamburger.setAttribute('aria-expanded', isExpanded);
-  hamburger.querySelector('i').className = isExpanded ? 'fa fa-times' : 'fa fa-bars';
-});
-
-document.querySelectorAll('nav a').forEach(link => {
-  link.addEventListener('click', () => {
-    nav.classList.remove('active');
-    hamburger.setAttribute('aria-expanded', 'false');
-    hamburger.querySelector('i').className = 'fa fa-bars';
-  });
-});
-
-// === Gooey blobs animation ===
-const colors = [
-  "rgba(227, 163, 255, 0.7)",
-  "rgba(109, 40, 217, 0.7)",
-  "rgba(147, 51, 234, 0.7)",
-  "rgba(85, 101, 247, 0.7)",
-  "rgba(144, 205, 244, 0.7)",
-  "rgba(227, 163, 255, 0.7)",
-  "rgba(154, 193, 230, 0.7)"
-];
-
-const container = document.querySelector(".blob-container");
-const blobCount = 7;
-const blobs = [];
-
-for(let i=0;i<blobCount;i++){
-  const blob = document.createElement("div");
-  blob.classList.add("blob");
-  const size = 320 + Math.random()*160;
-  blob.style.width = `${size}px`;
-  blob.style.height = `${size}px`;
-  blob.style.background = colors[i % colors.length];
-  container.appendChild(blob);
-
-  let x = Math.random()*window.innerWidth;
-  let y = Math.random()*window.innerHeight;
-  let dx = (Math.random()-0.5)*0.9;
-  let dy = (Math.random()-0.5)*0.9;
-  let squish = 1;
-  let targetSquish = 1;
-  blob.addEventListener('mouseenter', ()=>targetSquish=1.6);
-  blob.addEventListener('mouseleave', ()=>targetSquish=1);
-
-  function animate(){
-    x+=dx;
-    y+=dy;
-    if(x< -size*0.5 || x>window.innerWidth + size*0.5) dx*=-1;
-    if(y< -size*0.5 || y>window.innerHeight + size*0.5) dy*=-1;
-
-    squish += (targetSquish - squish)*0.06;
-    let pulse = 1 + Math.sin(Date.now()/500 + i)*0.12;
-    let floatSquash = 1 + Math.sin(Date.now()/300 + i)*0.25;
-    let growth = 1 + Math.sin(Date.now()/1000 + i)*0.15;
-    let finalX = pulse*floatSquash*squish*growth;
-    let finalY = pulse/floatSquash/squish*growth;
-
-    blob.style.transform = `translate3d(${x}px,${y}px,0) scale(${finalX},${finalY})`;
-    requestAnimationFrame(animate);
-  }
-  animate();
-  blobs.push(blob);
-}
-
-// === Interactive mouse-follow blob ===
-const mouseBlob = document.createElement('div');
-mouseBlob.classList.add('blob');
-mouseBlob.style.background = "rgba(140,100,255,0.8)";
-mouseBlob.style.width = "250px";
-mouseBlob.style.height = "250px";
-mouseBlob.style.zIndex = "0";
-container.appendChild(mouseBlob);
-
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
-let currentX = mouseX;
-let currentY = mouseY;
-
-window.addEventListener('mousemove', e => {
-  mouseX = e.clientX - 125; // center the blob
-  mouseY = e.clientY - 125;
-});
-
-function animateMouseBlob(){
-  currentX += (mouseX - currentX) * 0.12;
-  currentY += (mouseY - currentY) * 0.12;
-  const speed = Math.hypot(mouseX - currentX, mouseY - currentY);
-  let scale = 1 + speed * 0.002;
-
-  mouseBlob.style.transform = `translate3d(${currentX}px, ${currentY}px,0) scale(${scale})`;
-  requestAnimationFrame(animateMouseBlob);
-}
-animateMouseBlob();
-
-    // Pause animations when tab is not visible for performance
-    document.addEventListener('visibilitychange', () => {
-      const containers = document.querySelectorAll('.blob');
-      if (document.hidden) {
-        containers.forEach(blob => blob.style.animationPlayState = 'paused');
-      } else {
-        containers.forEach(blob => blob.style.animationPlayState = 'running');
-      }
-    });
-</script>
+<script src="js/loading screen.js"></script>
+<script src="js/blob.js"></script>
+<script src="js/contact form.js"></script>
+<script src="js/mobile menu.js"></script>
+<script src="js/nav.js"></script>
 </body>
 </html>
